@@ -1,0 +1,39 @@
+
+test.html
+=========
+<html ng-app="testApp">
+<script src="angular.js">//here load angularjs liberary
+<script src="test.js">//user js file
+<body ng-controller="testController">
+<input type="text" class="numberonly" ng-model="number">
+</body>
+</html>
+
+test.js
+========
+var testApp = angular.module('testApp',[]);
+//directive for number
+testApp.directive('numberonly', function() {
+  return {
+      restrict: 'C',
+      require: '^ngModel',
+      scope: {
+          ngModel: "="
+      },
+      link: function(scope, element, attrs, modelCtrl) {
+          modelCtrl.$parsers.push(function(inputValue) {
+              if (inputValue == undefined) return ''
+              var transformedInput = inputValue.replace(/[^0-9]/g, '');
+              if (transformedInput != inputValue) {
+                  modelCtrl.$setViewValue(transformedInput);
+                  modelCtrl.$render();
+              }
+
+              return transformedInput;
+          });
+      }
+  };
+})
+testApp.controller('testController',function(){
+//do stuff here
+})
